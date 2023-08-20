@@ -1,0 +1,5 @@
+resources:
+- 0-namespace.yaml
+- 1-deployment.yaml
+- 2-service.yaml
+- 3-route.yaml

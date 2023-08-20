@@ -1,0 +1,56 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: app-02
+  namespace: application-02
+  labels:
+    app: app-02
+    app.kubernetes.io/component: app-02
+    app.kubernetes.io/instance: app-02
+    app.kubernetes.io/name: app-02
+    app.openshift.io/runtime: httpd
+    app.openshift.io/runtime-version: 2.4-el7
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-02
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: app-02
+        deployment: app-02
+    spec:
+      volumes:
+        - name: pvc-app02
+          persistentVolumeClaim:
+            claimName: pvc-app02
+      containers:
+        - name: app-02
+          image: >-
+            image-registry.openshift-image-registry.svc:5000/application-02/app-02@sha256:e694bed59be51d2b36d11a227cef6c3ee6a5dbbeb580c70d9df38e3e5318e236
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+            - containerPort: 8443
+              protocol: TCP
+          resources: {}
+          volumeMounts:
+            - name: pvc-app02
+              mountPath: /mnt
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

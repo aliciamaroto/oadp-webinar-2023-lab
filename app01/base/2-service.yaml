@@ -1,0 +1,35 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: app-01
+  namespace: application-01
+  labels:
+    app: app-01
+    app.kubernetes.io/component: app-01
+    app.kubernetes.io/instance: app-01
+    app.kubernetes.io/name: app-01
+    app.openshift.io/runtime: httpd
+    app.openshift.io/runtime-version: 2.4-el7
+spec:
+  clusterIP: 172.30.40.129
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+    - name: 8443-tcp
+      protocol: TCP
+      port: 8443
+      targetPort: 8443
+  internalTrafficPolicy: Cluster
+  clusterIPs:
+    - 172.30.40.129
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app: app-01
+    deployment: app-01
+

@@ -1,43 +1,30 @@
-apiVersion: oadp.openshift.io/v1alpha1
 kind: DataProtectionApplication
+apiVersion: oadp.openshift.io/v1alpha1
 metadata:
-  name: velero-sample
-  namespace: openshift-adp
+ name: velero-sample
+ namespace: openshift-adp
 spec:
-  features:
-   dataMover:
-     enable: true
-     credentialName: restic-secret
-     timeout: 2h
-    volumeOptionsForStorageClasses:
-          ocs-storagecluster-cephfs:
-            sourceVolumeOptions:
-              accessMode: ReadOnlyMany
-              cacheAccessMode: ReadWriteMany
-              cacheStorageClassName: ocs-storagecluster-cephfs
-              storageClassName: ocs-storagecluster-cephfs-shallow
-  backupLocations:
-  - velero:
-      config:
-        resourceGroup: Velero_Backups
-        storageAccount: 
-        subscriptionId: 
-        storageAccountKeyEnvVar: AZURE_STORAGE_ACCOUNT_ACCESS_KEY
-      credential:
-        key: cloud
-        name: cloud-credentials-azure
-      default: true
-      objectStorage:
-        bucket: velero
-        prefix: velero
-      provider: azure
+ backupLocations:
+   - velero:
+       config:
+         profile: "default"
+          region: minio
+          s3Url: <url> 
+          insecureSkipTLSVerify: "true"
+          s3ForcePathStyle: "true"
+        provider: aws
+        default: true
+        credential:
+          key: cloud
+          name: cloud-credentials 
+        objectStorage:
+          bucket: <bucket_name> 
+          prefix: <prefix> 
   configuration:
-    restic:
-      enable: false
-    velero:
-      defaultPlugins:
-      - openshift
-      - azure
-      - csi
-      - vsm
-
+   restic:
+     enable: true
+   velero:
+     defaultPlugins:
+       - openshift
+       - aws
+       - csi
